@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>Registrador de gastos</title>
+<style>
+  :root{
+    --bg:#ffffff;
+    --ink:#1f2937;
+    --muted:#6b7280;
+    --line:#e5e7eb;
+    --card:#ffffff;
+    --green:#1f7a54;
+    --green-dark:#186045;
+    --soft:#f9fafb;
+    --err-bg:#fef2f2;
+    --err-line:#fecaca;
+    --err-ink:#b91c1c;
+    --ok:#065f46;
+    --radius:16px;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0}
+  body{
+    font-family:'Inter',system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;
+    color:var(--ink);
+    background:var(--bg);
+    line-height:1.5;
+    -webkit-font-smoothing:antialiased;
+    padding:24px 16px 64px;
+  }
+  .wrap{max-width:640px;margin:0 auto}
+  h1{font-size:28px;font-weight:800;letter-spacing:-.02em;margin:0 0 4px}
+  .sub{color:var(--muted);margin:0 0 24px;font-size:15px}
+  .card{
+    background:var(--card);
+    border:1px solid var(--line);
+    border-radius:var(--radius);
+    padding:20px;
+    box-shadow:0 1px 2px rgba(0,0,0,.04);
+  }
+  .label{
+    font-size:11px;font-weight:700;letter-spacing:.08em;
+    text-transform:uppercase;color:var(--muted);margin:0 0 8px;
+  }
+  .inputrow{display:flex;gap:10px;align-items:stretch}
+  #entry{
+    flex:1;font-size:16px;padding:13px 14px;
+    border:1px solid var(--line);border-radius:10px;outline:none;
+    background:#fff;color:var(--ink);
+  }
+  #entry:focus{border-color:var(--green);box-shadow:0 0 0 3px rgba(31,122,84,.12)}
+  #mic{
+    width:52px;flex:0 0 52px;border:1px solid var(--line);border-radius:10px;
+    background:#fff;cursor:pointer;font-size:20px;color:var(--muted);
+    display:flex;align-items:center;justify-content:center;transition:.15s;
+  }
+  #mic:hover{border-color:var(--green);color:var(--green)}
+  #mic.rec{background:var(--err-bg);border-color:var(--err-line);color:var(--err-ink);animation:pulse 1s infinite}
+  #mic:disabled{opacity:.4;cursor:not-allowed}
+  @keyframes pulse{50%{opacity:.55}}
+  .btn-primary{
+    width:100%;margin-top:14px;padding:14px;border:none;border-radius:10px;
+    background:var(--green);color:#fff;font-size:16px;font-weight:700;cursor:pointer;
+    transition:.15s;
+  }
+  .btn-primary:hover{background:var(--green-dark)}
+  .btn-primary:active{transform:translateY(1px)}
+  .hint{color:var(--muted);font-size:13px;margin:12px 0 0}
+  .msg{margin-top:12px;padding:11px 14px;border-radius:10px;font-size:14px;display:none}
+  .msg.err{display:block;background:var(--err-bg);border:1px solid var(--err-line);color:var(--err-ink)}
+  .msg.ok{display:block;background:#ecfdf5;border:1px solid #a7f3d0;color:var(--ok)}
+  .stats{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin:16px 0}
+  .stat{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:16px 18px}
+  .stat .label{margin-bottom:6px}
+  .stat .val{font-size:24px;font-weight:800;letter-spacing:-.02em}
+  .movhead{display:flex;align-items:center;justify-content:space-between;gap:8px;margin:22px 2px 12px;flex-wrap:wrap}
+  .movhead .label{margin:0}
+  .movhead .actions{display:flex;gap:8px}
+  .btn-ghost{
+    border:1px solid var(--line);background:#fff;color:var(--ink);
+    padding:8px 12px;border-radius:9px;font-size:13px;font-weight:600;cursor:pointer;transition:.15s;
+  }
+  .btn-ghost:hover{border-color:var(--green);color:var(--green)}
+  .list{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);overflow:hidden}
+  .empty{padding:34px 20px;text-align:center;color:var(--muted);font-size:15px}
+  .item{display:flex;align-items:center;gap:12px;padding:14px 16px;border-top:1px solid var(--line)}
+  .item:first-child{border-top:none}
+  .item .body{flex:1;min-width:0}
+  .item .concept{font-weight:600;font-size:15px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .item .meta{color:var(--muted);font-size:13px;margin-top:2px;display:flex;gap:6px;align-items:center;flex-wrap:wrap}
+  .metodo{cursor:pointer;border-bottom:1px dashed var(--line);padding-bottom:1px}
+  .metodo.empty-m{color:var(--green);border-bottom-color:var(--green)}
+  .metodo-input{font:inherit;font-size:13px;padding:2px 6px;border:1px solid var(--green);border-radius:6px;width:120px}
+  .amount{font-weight:800;font-size:16px;white-space:nowrap}
+  .del{border:none;background:none;color:var(--muted);font-size:20px;cursor:pointer;padding:0 4px;line-height:1;border-radius:6px}
+  .del:hover{color:var(--err-ink)}
+  @media(max-width:480px){
+    body{padding:18px 12px 56px}
+    h1{font-size:24px}
+    .stat .val{font-size:21px}
+  }
+  @media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>Registrador de gastos</h1>
+  <p class="sub">Dicta o escribe en lenguaje natural. Yo lo ordeno para tu plantilla.</p>
+
+  <div class="card">
+    <p class="label">¿En qué gastaste?</p>
+    <div class="inputrow">
+      <input id="entry" type="text" placeholder="Almuerzo 15 soles" autocomplete="off"
+             enterkeyhint="done" aria-label="Describe tu gasto">
+      <button id="mic" title="Dictar" aria-label="Dictar">🎤</button>
+    </div>
+    <button class="btn-primary" id="save">Registrar</button>
+    <p class="hint">Sin método de pago = queda en blanco para que lo completes. Puedes decir “ayer”, “antier” o una fecha como 8/12.</p>
+    <div class="msg" id="msg"></div>
+  </div>
+
+  <div class="stats">
+    <div class="stat"><p class="label">Hoy</p><div class="val" id="today">S/ 0.00</div></div>
+    <div class="stat"><p class="label">Este mes</p><div class="val" id="month">S/ 0.00</div></div>
+  </div>
+
+  <div class="movhead">
+    <p class="label">Movimientos</p>
+    <div class="actions">
+      <button class="btn-ghost" id="copy">Copiar para Sheets</button>
+      <button class="btn-ghost" id="clear">Vaciar</button>
+    </div>
+  </div>
+  <div class="list" id="list"></div>
+</div>
+
+<script>
+/* ---------- almacenamiento (funciona offline, por navegador) ---------- */
+const KEY='regGastos_v1';
+let data=[];
+function load(){ try{ const s=localStorage.getItem(KEY); data=s?JSON.parse(s):[]; }catch(e){ data=[]; } if(!Array.isArray(data)) data=[]; }
+function persist(){ try{ localStorage.setItem(KEY,JSON.stringify(data)); }catch(e){/* modo vista previa: se guarda solo en memoria */} }
+
+/* ---------- utilidades de fecha ---------- */
+const two=n=>String(n).padStart(2,'0');
+const iso=d=>d.getFullYear()+'-'+two(d.getMonth()+1)+'-'+two(d.getDate());
+const fmtDate=s=>{const[y,m,d]=s.split('-');return d+'/'+m+'/'+y;};
+const money=n=>'S/ '+Number(n).toLocaleString('es-PE',{minimumFractionDigits:2,maximumFractionDigits:2});
+
+/* ---------- intérprete local (sin internet) ---------- */
+function parse(raw){
+  const original=(raw||'').trim();
+  if(!original) return null;
+  let text=' '+original.toLowerCase()+' ';
+  const today=new Date();
+  let date=new Date(today);
+
+  // fecha
+  if(/\bhoy\b/.test(text)){ text=text.replace(/\bhoy\b/,' '); }
+  else if(/\bantier\b|\banteayer\b/.test(text)){ date.setDate(date.getDate()-2); text=text.replace(/\bantier\b|\banteayer\b/,' '); }
+  else if(/\bayer\b/.test(text)){ date.setDate(date.getDate()-1); text=text.replace(/\bayer\b/,' '); }
+  else{
+    const dm=text.match(/\b(\d{1,2})[\/\-](\d{1,2})(?:[\/\-](\d{2,4}))?\b/);
+    if(dm){
+      let d=+dm[1], m=+dm[2]-1, y=dm[3]?+dm[3]:today.getFullYear();
+      if(y<100) y+=2000;
+      const cand=new Date(y,m,d);
+      if(!isNaN(cand)){ date=cand; text=text.replace(dm[0],' '); }
+    }
+  }
+
+  // método de pago
+  const methods=[
+    [/\byape\b/,'Yape'],[/\bplin\b/,'Plin'],[/\befectivo\b|\bcash\b/,'Efectivo'],
+    [/\btarjeta\b/,'Tarjeta'],[/\bd[eé]bito\b/,'Débito'],[/\bcr[eé]dito\b/,'Crédito'],
+    [/\btransferencia\b|\btransfer\b/,'Transferencia'],[/\bvisa\b/,'Visa'],[/\bmastercard\b/,'Mastercard']
+  ];
+  let metodo='';
+  for(const[re,label] of methods){ if(re.test(text)){ metodo=label; text=text.replace(re,' '); } }
+
+  // monto
+  const nums=[...text.matchAll(/\d+(?:[.,]\d{1,2})?/g)].map(m=>m[0]);
+  if(!nums.length) return null;
+  const amtStr=nums[0];
+  const monto=parseFloat(amtStr.replace(',','.'));
+  if(isNaN(monto)) return null;
+
+  // concepto (a partir del texto original)
+  let c=original.replace(amtStr,' ');
+  c=c.replace(/\bsoles?\b/gi,' ').replace(/S\/\.?/gi,' ').replace(/\bpen\b/gi,' ');
+  c=c.replace(/\b(hoy|ayer|antier|anteayer)\b/gi,' ');
+  c=c.replace(/\b(\d{1,2})[\/\-](\d{1,2})(?:[\/\-](\d{2,4}))?\b/g,' ');
+  for(const[re] of methods){ c=c.replace(new RegExp(re.source,'gi'),' '); }
+  c=c.replace(/\b(gast[eé]|compr[eé]|pagu[eé]|pague|gaste|compre)\b/gi,' ');
+  c=c.replace(/\s+/g,' ').replace(/^[\s,.;:]+|[\s,.;:]+$/g,'').trim();
+  let prev;
+  do{ prev=c; c=c.replace(/^(con|por|en|de|del|la|el|los|las|un|una|unos|unas|y)\b\s*/i,'')
+                   .replace(/\s*\b(con|por|en|de|del|la|el)\b$/i,'').trim(); }while(c!==prev);
+  if(!c) c='Gasto';
+  c=c.charAt(0).toUpperCase()+c.slice(1);
+
+  return {concepto:c, monto, fecha:iso(date), metodo};
+}
+
+/* ---------- render ---------- */
+const $=id=>document.getElementById(id);
+function render(){
+  const t=iso(new Date());
+  const now=new Date(), ym=now.getFullYear()+'-'+two(now.getMonth()+1);
+  let sHoy=0,sMes=0;
+  for(const r of data){ if(r.fecha===t) sHoy+=r.monto; if(r.fecha.startsWith(ym)) sMes+=r.monto; }
+  $('today').textContent=money(sHoy);
+  $('month').textContent=money(sMes);
+
+  const list=$('list');
+  if(!data.length){
+    list.innerHTML='<div class="empty">Aún no hay nada. Dicta tu primer gasto arriba 👆</div>';
+    return;
+  }
+  const rows=[...data].sort((a,b)=>b.createdAt-a.createdAt);
+  list.innerHTML=rows.map(r=>{
+    const m = r.metodo
+      ? '<span class="metodo" data-id="'+r.id+'">'+r.metodo+'</span>'
+      : '<span class="metodo empty-m" data-id="'+r.id+'">+ método</span>';
+    return '<div class="item">'
+      +'<div class="body"><div class="concept">'+esc(r.concepto)+'</div>'
+      +'<div class="meta">'+fmtDate(r.fecha)+' · '+m+'</div></div>'
+      +'<div class="amount">'+money(r.monto)+'</div>'
+      +'<button class="del" data-del="'+r.id+'" title="Eliminar">×</button></div>';
+  }).join('');
+}
+function esc(s){return s.replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));}
+
+/* ---------- mensajes ---------- */
+let msgT;
+function show(kind,txt){ const el=$('msg'); el.className='msg '+kind; el.textContent=txt; clearTimeout(msgT); if(kind==='ok') msgT=setTimeout(()=>el.className='msg',2500); }
+function hideMsg(){ $('msg').className='msg'; }
+
+/* ---------- registrar ---------- */
+function add(){
+  const raw=$('entry').value;
+  const p=parse(raw);
+  if(!p){ show('err','No pude encontrar un monto. Prueba algo como “almuerzo 15 soles”.'); return; }
+  data.push({...p, id:Date.now()+''+Math.floor(Math.random()*999), createdAt:Date.now()});
+  persist(); render();
+  $('entry').value=''; $('entry').focus(); hideMsg();
+  show('ok','Registrado: '+p.concepto+' · '+money(p.monto));
+}
+$('save').onclick=add;
+$('entry').addEventListener('keydown',e=>{ if(e.key==='Enter') add(); });
+
+/* ---------- eliminar / vaciar ---------- */
+$('list').addEventListener('click',e=>{
+  const del=e.target.getAttribute('data-del');
+  if(del){ data=data.filter(r=>r.id!==del); persist(); render(); return; }
+  const met=e.target.closest('.metodo');
+  if(met) editMetodo(met.getAttribute('data-id'), met);
+});
+$('clear').onclick=()=>{ if(data.length && confirm('¿Vaciar todos los movimientos? Esto no se puede deshacer.')){ data=[]; persist(); render(); } };
+
+/* ---------- editar método en línea ---------- */
+function editMetodo(id, span){
+  const r=data.find(x=>x.id===id); if(!r) return;
+  const input=document.createElement('input');
+  input.className='metodo-input'; input.value=r.metodo; input.placeholder='Yape, efectivo…';
+  span.replaceWith(input); input.focus(); input.select();
+  const done=()=>{ r.metodo=input.value.trim(); persist(); render(); };
+  input.addEventListener('keydown',ev=>{ if(ev.key==='Enter') done(); if(ev.key==='Escape') render(); });
+  input.addEventListener('blur',done);
+}
+
+/* ---------- copiar para Sheets (TSV) ---------- */
+$('copy').onclick=async()=>{
+  if(!data.length){ show('err','No hay movimientos para copiar.'); return; }
+  const rows=[...data].sort((a,b)=>a.createdAt-b.createdAt);
+  const tsv=['Fecha\tConcepto\tMonto\tMétodo',
+    ...rows.map(r=>[fmtDate(r.fecha),r.concepto,r.monto.toFixed(2),r.metodo].join('\t'))].join('\n');
+  try{ await navigator.clipboard.writeText(tsv); show('ok','Copiado. Pega en tu hoja con Ctrl/Cmd + V.'); }
+  catch(e){
+    const ta=document.createElement('textarea'); ta.value=tsv; document.body.appendChild(ta); ta.select();
+    try{ document.execCommand('copy'); show('ok','Copiado. Pega en tu hoja.'); }catch(_){ show('err','No pude copiar automáticamente.'); }
+    ta.remove();
+  }
+};
+
+/* ---------- dictado por voz ---------- */
+const SR=window.SpeechRecognition||window.webkitSpeechRecognition;
+const mic=$('mic');
+if(SR){
+  const rec=new SR(); rec.lang='es-PE'; rec.interimResults=false; rec.maxAlternatives=1;
+  let recording=false;
+  mic.onclick=()=>{ if(recording){ rec.stop(); return; } try{ rec.start(); }catch(e){} };
+  rec.onstart=()=>{ recording=true; mic.classList.add('rec'); hideMsg(); };
+  rec.onend=()=>{ recording=false; mic.classList.remove('rec'); };
+  rec.onerror=ev=>{ recording=false; mic.classList.remove('rec');
+    if(ev.error==='not-allowed') show('err','Permite el micrófono en el navegador para dictar.');
+    else if(ev.error==='network') show('err','El dictado necesita conexión. Puedes escribir el gasto.');
+  };
+  rec.onresult=ev=>{ const txt=ev.results[0][0].transcript; $('entry').value=txt; add(); };
+}else{
+  mic.disabled=true; mic.title='Tu navegador no soporta dictado (usa Chrome o escribe)';
+}
+
+/* ---------- iniciar ---------- */
+load(); render();
+</script>
+</body>
+</html>
