@@ -6,83 +6,63 @@
 <title>Registrador de gastos</title>
 <style>
   :root{
-    --bg:#ffffff;
-    --ink:#1f2937;
-    --muted:#6b7280;
-    --line:#e5e7eb;
-    --card:#ffffff;
-    --green:#1f7a54;
-    --green-dark:#186045;
-    --soft:#f9fafb;
-    --err-bg:#fef2f2;
-    --err-line:#fecaca;
-    --err-ink:#b91c1c;
-    --ok:#065f46;
-    --radius:16px;
+    --bg:#ffffff;--ink:#1f2937;--muted:#6b7280;--line:#e5e7eb;--card:#ffffff;
+    --green:#1f7a54;--green-dark:#186045;--soft:#f9fafb;
+    --err-bg:#fef2f2;--err-line:#fecaca;--err-ink:#b91c1c;--ok:#065f46;--radius:16px;
   }
   *{box-sizing:border-box}
   html,body{margin:0}
-  body{
-    font-family:'Inter',system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;
-    color:var(--ink);
-    background:var(--bg);
-    line-height:1.5;
-    -webkit-font-smoothing:antialiased;
-    padding:24px 16px 64px;
-  }
+  body{font-family:'Inter',system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;color:var(--ink);
+    background:var(--bg);line-height:1.5;-webkit-font-smoothing:antialiased;padding:24px 16px 64px}
   .wrap{max-width:640px;margin:0 auto}
-  h1{font-size:28px;font-weight:800;letter-spacing:-.02em;margin:0 0 4px}
-  .sub{color:var(--muted);margin:0 0 24px;font-size:15px}
-  .card{
-    background:var(--card);
-    border:1px solid var(--line);
-    border-radius:var(--radius);
-    padding:20px;
-    box-shadow:0 1px 2px rgba(0,0,0,.04);
-  }
-  .label{
-    font-size:11px;font-weight:700;letter-spacing:.08em;
-    text-transform:uppercase;color:var(--muted);margin:0 0 8px;
-  }
+  h1{font-size:28px;font-weight:800;letter-spacing:-.02em;margin:0}
+  .sub{color:var(--muted);margin:4px 0 24px;font-size:15px}
+  .topbar{display:flex;align-items:flex-start;justify-content:space-between;gap:12px}
+  .card{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
+    padding:20px;box-shadow:0 1px 2px rgba(0,0,0,.04)}
+  .label{font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin:0 0 8px}
   .inputrow{display:flex;gap:10px;align-items:stretch}
-  #entry{
-    flex:1;font-size:16px;padding:13px 14px;
-    border:1px solid var(--line);border-radius:10px;outline:none;
-    background:#fff;color:var(--ink);
-  }
+  #entry{flex:1;font-size:16px;padding:13px 14px;border:1px solid var(--line);border-radius:10px;
+    outline:none;background:#fff;color:var(--ink)}
   #entry:focus{border-color:var(--green);box-shadow:0 0 0 3px rgba(31,122,84,.12)}
-  #mic{
-    width:52px;flex:0 0 52px;border:1px solid var(--line);border-radius:10px;
-    background:#fff;cursor:pointer;font-size:20px;color:var(--muted);
-    display:flex;align-items:center;justify-content:center;transition:.15s;
-  }
+  #mic{width:52px;flex:0 0 52px;border:1px solid var(--line);border-radius:10px;background:#fff;
+    cursor:pointer;font-size:20px;color:var(--muted);display:flex;align-items:center;justify-content:center;transition:.15s}
   #mic:hover{border-color:var(--green);color:var(--green)}
   #mic.rec{background:var(--err-bg);border-color:var(--err-line);color:var(--err-ink);animation:pulse 1s infinite}
   #mic:disabled{opacity:.4;cursor:not-allowed}
   @keyframes pulse{50%{opacity:.55}}
-  .btn-primary{
-    width:100%;margin-top:14px;padding:14px;border:none;border-radius:10px;
-    background:var(--green);color:#fff;font-size:16px;font-weight:700;cursor:pointer;
-    transition:.15s;
-  }
+  .btn-primary{width:100%;margin-top:14px;padding:14px;border:none;border-radius:10px;background:var(--green);
+    color:#fff;font-size:16px;font-weight:700;cursor:pointer;transition:.15s}
   .btn-primary:hover{background:var(--green-dark)}
   .btn-primary:active{transform:translateY(1px)}
+  .btn-primary:disabled{opacity:.6;cursor:progress}
   .hint{color:var(--muted);font-size:13px;margin:12px 0 0}
   .msg{margin-top:12px;padding:11px 14px;border-radius:10px;font-size:14px;display:none}
   .msg.err{display:block;background:var(--err-bg);border:1px solid var(--err-line);color:var(--err-ink)}
   .msg.ok{display:block;background:#ecfdf5;border:1px solid #a7f3d0;color:var(--ok)}
+  .msg.info{display:block;background:#eff6ff;border:1px solid #bfdbfe;color:#1e40af}
   .stats{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin:16px 0}
   .stat{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:16px 18px}
   .stat .label{margin-bottom:6px}
   .stat .val{font-size:24px;font-weight:800;letter-spacing:-.02em}
-  .movhead{display:flex;align-items:center;justify-content:space-between;gap:8px;margin:22px 2px 12px;flex-wrap:wrap}
-  .movhead .label{margin:0}
-  .movhead .actions{display:flex;gap:8px}
-  .btn-ghost{
-    border:1px solid var(--line);background:#fff;color:var(--ink);
-    padding:8px 12px;border-radius:9px;font-size:13px;font-weight:600;cursor:pointer;transition:.15s;
-  }
+  .section-h{display:flex;align-items:center;justify-content:space-between;gap:8px;margin:22px 2px 12px;flex-wrap:wrap}
+  .section-h .label{margin:0}
+  .actions{display:flex;gap:8px;flex-wrap:wrap}
+  .btn-ghost{border:1px solid var(--line);background:#fff;color:var(--ink);padding:8px 12px;border-radius:9px;
+    font-size:13px;font-weight:600;cursor:pointer;transition:.15s}
   .btn-ghost:hover{border-color:var(--green);color:var(--green)}
+  .panel{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:18px}
+  .chart-title{font-size:13px;font-weight:700;color:var(--muted);margin:0 0 10px}
+  .daily{display:flex;align-items:flex-end;gap:4px;height:120px;margin-bottom:6px}
+  .daily .col{flex:1;display:flex;flex-direction:column;justify-content:flex-end;align-items:center;height:100%}
+  .daily .bar{width:70%;background:var(--green);border-radius:4px 4px 0 0;min-height:2px;transition:height .3s}
+  .daily .d{font-size:10px;color:var(--muted);margin-top:4px}
+  .cat{margin-top:18px}
+  .cat .row{display:flex;align-items:center;gap:10px;margin-bottom:8px}
+  .cat .name{width:34%;font-size:13px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .cat .track{flex:1;background:var(--soft);border-radius:6px;height:16px;overflow:hidden}
+  .cat .fill{height:100%;background:var(--green);border-radius:6px}
+  .cat .amt{font-size:12px;font-weight:700;white-space:nowrap;min-width:64px;text-align:right}
   .list{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);overflow:hidden}
   .empty{padding:34px 20px;text-align:center;color:var(--muted);font-size:15px}
   .item{display:flex;align-items:center;gap:12px;padding:14px 16px;border-top:1px solid var(--line)}
@@ -96,18 +76,42 @@
   .amount{font-weight:800;font-size:16px;white-space:nowrap}
   .del{border:none;background:none;color:var(--muted);font-size:20px;cursor:pointer;padding:0 4px;line-height:1;border-radius:6px}
   .del:hover{color:var(--err-ink)}
-  @media(max-width:480px){
-    body{padding:18px 12px 56px}
-    h1{font-size:24px}
-    .stat .val{font-size:21px}
-  }
+  /* login */
+  .loginwrap{min-height:70vh;display:flex;align-items:center;justify-content:center}
+  .loginbox{width:100%;max-width:360px}
+  .loginbox h1{font-size:24px;margin-bottom:4px}
+  .loginbox p{color:var(--muted);font-size:14px;margin:0 0 18px}
+  .field{margin-bottom:12px}
+  .field input{width:100%;font-size:16px;padding:12px 14px;border:1px solid var(--line);border-radius:10px;outline:none}
+  .field input:focus{border-color:var(--green);box-shadow:0 0 0 3px rgba(31,122,84,.12)}
+  .loginerr{color:var(--err-ink);font-size:13px;min-height:18px;margin-top:6px}
+  @media(max-width:480px){body{padding:18px 12px 56px}h1{font-size:24px}.stat .val{font-size:21px}.cat .name{width:40%}}
   @media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
 </style>
 </head>
 <body>
-<div class="wrap">
-  <h1>Registrador de gastos</h1>
-  <p class="sub">Dicta o escribe en lenguaje natural. Yo lo ordeno para tu plantilla.</p>
+
+<!-- ===== Pantalla de inicio de sesión ===== -->
+<div class="loginwrap" id="login" style="display:none">
+  <div class="loginbox">
+    <h1>Registrador de gastos</h1>
+    <p>Ingresa para ver tus gastos. Son privados: solo tú accedes.</p>
+    <div class="field"><input id="email" type="email" placeholder="Tu correo" autocomplete="username"></div>
+    <div class="field"><input id="pass" type="password" placeholder="Tu contraseña" autocomplete="current-password"></div>
+    <button class="btn-primary" id="loginBtn" style="margin-top:4px">Entrar</button>
+    <div class="loginerr" id="loginErr"></div>
+  </div>
+</div>
+
+<!-- ===== App ===== -->
+<div class="wrap" id="app" style="display:none">
+  <div class="topbar">
+    <div>
+      <h1>Registrador de gastos</h1>
+      <p class="sub">Dicta o escribe en lenguaje natural. Se guarda solo, en tu cuenta.</p>
+    </div>
+    <button class="btn-ghost" id="logout">Salir</button>
+  </div>
 
   <div class="card">
     <p class="label">¿En qué gastaste?</p>
@@ -126,28 +130,51 @@
     <div class="stat"><p class="label">Este mes</p><div class="val" id="month">S/ 0.00</div></div>
   </div>
 
-  <div class="movhead">
+  <div class="section-h"><p class="label">Gráficos</p></div>
+  <div class="panel" id="charts">
+    <p class="chart-title">Gasto por día (últimos 14 días)</p>
+    <div class="daily" id="daily"></div>
+    <div class="cat" id="cat"></div>
+  </div>
+
+  <div class="section-h">
     <p class="label">Movimientos</p>
     <div class="actions">
-      <button class="btn-ghost" id="copy">Copiar para Sheets</button>
+      <button class="btn-ghost" id="export">Exportar a Sheets</button>
       <button class="btn-ghost" id="clear">Vaciar</button>
     </div>
   </div>
   <div class="list" id="list"></div>
 </div>
 
+<!-- Firebase (gratis) -->
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
 <script>
-/* ---------- almacenamiento (funciona offline, por navegador) ---------- */
-const KEY='regGastos_v1';
-let data=[];
-function load(){ try{ const s=localStorage.getItem(KEY); data=s?JSON.parse(s):[]; }catch(e){ data=[]; } if(!Array.isArray(data)) data=[]; }
-function persist(){ try{ localStorage.setItem(KEY,JSON.stringify(data)); }catch(e){/* modo vista previa: se guarda solo en memoria */} }
+/* ============================================================
+   CONFIGURACIÓN  →  pega aquí tu firebaseConfig (de la consola)
+   ============================================================ */
+const firebaseConfig = {
+  apiKey: "AIzaSyC0OH8-JBaS2v3Ye8I1tfE1upWrJ2Aednc",
+  authDomain: "control-gastos-3c304.firebaseapp.com",
+  projectId: "control-gastos-3c304",
+  storageBucket: "control-gastos-3c304.firebasestorage.app",
+  messagingSenderId: "493640259019",
+  appId: "1:493640259019:web:6c346e7d1745bc8a1e924e"
+};
 
-/* ---------- utilidades de fecha ---------- */
+/* ---------- estado ---------- */
+let data=[], uid=null, unsub=null;
+const $=id=>document.getElementById(id);
+const configured=()=>firebaseConfig.apiKey && firebaseConfig.apiKey!=='PEGA_AQUI';
+
+/* ---------- utilidades ---------- */
 const two=n=>String(n).padStart(2,'0');
 const iso=d=>d.getFullYear()+'-'+two(d.getMonth()+1)+'-'+two(d.getDate());
 const fmtDate=s=>{const[y,m,d]=s.split('-');return d+'/'+m+'/'+y;};
 const money=n=>'S/ '+Number(n).toLocaleString('es-PE',{minimumFractionDigits:2,maximumFractionDigits:2});
+function esc(s){return String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));}
 
 /* ---------- intérprete local (sin internet) ---------- */
 function parse(raw){
@@ -156,56 +183,45 @@ function parse(raw){
   let text=' '+original.toLowerCase()+' ';
   const today=new Date();
   let date=new Date(today);
-
-  // fecha
   if(/\bhoy\b/.test(text)){ text=text.replace(/\bhoy\b/,' '); }
   else if(/\bantier\b|\banteayer\b/.test(text)){ date.setDate(date.getDate()-2); text=text.replace(/\bantier\b|\banteayer\b/,' '); }
   else if(/\bayer\b/.test(text)){ date.setDate(date.getDate()-1); text=text.replace(/\bayer\b/,' '); }
   else{
     const dm=text.match(/\b(\d{1,2})[\/\-](\d{1,2})(?:[\/\-](\d{2,4}))?\b/);
-    if(dm){
-      let d=+dm[1], m=+dm[2]-1, y=dm[3]?+dm[3]:today.getFullYear();
-      if(y<100) y+=2000;
-      const cand=new Date(y,m,d);
-      if(!isNaN(cand)){ date=cand; text=text.replace(dm[0],' '); }
-    }
+    if(dm){ let d=+dm[1],m=+dm[2]-1,y=dm[3]?+dm[3]:today.getFullYear(); if(y<100)y+=2000;
+      const c=new Date(y,m,d); if(!isNaN(c)){ date=c; text=text.replace(dm[0],' '); } }
   }
-
-  // método de pago
-  const methods=[
-    [/\byape\b/,'Yape'],[/\bplin\b/,'Plin'],[/\befectivo\b|\bcash\b/,'Efectivo'],
+  const methods=[[/\byape\b/,'Yape'],[/\bplin\b/,'Plin'],[/\befectivo\b|\bcash\b/,'Efectivo'],
     [/\btarjeta\b/,'Tarjeta'],[/\bd[eé]bito\b/,'Débito'],[/\bcr[eé]dito\b/,'Crédito'],
-    [/\btransferencia\b|\btransfer\b/,'Transferencia'],[/\bvisa\b/,'Visa'],[/\bmastercard\b/,'Mastercard']
-  ];
+    [/\btransferencia\b|\btransfer\b/,'Transferencia'],[/\bvisa\b/,'Visa'],[/\bmastercard\b/,'Mastercard']];
   let metodo='';
   for(const[re,label] of methods){ if(re.test(text)){ metodo=label; text=text.replace(re,' '); } }
-
-  // monto
   const nums=[...text.matchAll(/\d+(?:[.,]\d{1,2})?/g)].map(m=>m[0]);
   if(!nums.length) return null;
-  const amtStr=nums[0];
-  const monto=parseFloat(amtStr.replace(',','.'));
+  const monto=parseFloat(nums[0].replace(',','.'));
   if(isNaN(monto)) return null;
-
-  // concepto (a partir del texto original)
-  let c=original.replace(amtStr,' ');
+  let c=original.replace(nums[0],' ');
   c=c.replace(/\bsoles?\b/gi,' ').replace(/S\/\.?/gi,' ').replace(/\bpen\b/gi,' ');
   c=c.replace(/\b(hoy|ayer|antier|anteayer)\b/gi,' ');
   c=c.replace(/\b(\d{1,2})[\/\-](\d{1,2})(?:[\/\-](\d{2,4}))?\b/g,' ');
   for(const[re] of methods){ c=c.replace(new RegExp(re.source,'gi'),' '); }
   c=c.replace(/\b(gast[eé]|compr[eé]|pagu[eé]|pague|gaste|compre)\b/gi,' ');
   c=c.replace(/\s+/g,' ').replace(/^[\s,.;:]+|[\s,.;:]+$/g,'').trim();
-  let prev;
-  do{ prev=c; c=c.replace(/^(con|por|en|de|del|la|el|los|las|un|una|unos|unas|y)\b\s*/i,'')
-                   .replace(/\s*\b(con|por|en|de|del|la|el)\b$/i,'').trim(); }while(c!==prev);
+  let prev; do{ prev=c; c=c.replace(/^(con|por|en|de|del|la|el|los|las|un|una|unos|unas|y)\b\s*/i,'')
+                          .replace(/\s*\b(con|por|en|de|del|la|el)\b$/i,'').trim(); }while(c!==prev);
   if(!c) c='Gasto';
   c=c.charAt(0).toUpperCase()+c.slice(1);
-
   return {concepto:c, monto, fecha:iso(date), metodo};
 }
 
+/* ---------- mensajes ---------- */
+let msgT;
+function show(kind,txt){ const el=$('msg'); el.className='msg '+kind; el.textContent=txt;
+  clearTimeout(msgT); if(kind==='ok') msgT=setTimeout(()=>el.className='msg',2500); }
+function hideMsg(){ $('msg').className='msg'; }
+function setBusy(b){ $('save').disabled=b; $('save').textContent=b?'Guardando…':'Registrar'; }
+
 /* ---------- render ---------- */
-const $=id=>document.getElementById(id);
 function render(){
   const t=iso(new Date());
   const now=new Date(), ym=now.getFullYear()+'-'+two(now.getMonth()+1);
@@ -213,77 +229,94 @@ function render(){
   for(const r of data){ if(r.fecha===t) sHoy+=r.monto; if(r.fecha.startsWith(ym)) sMes+=r.monto; }
   $('today').textContent=money(sHoy);
   $('month').textContent=money(sMes);
-
+  drawCharts();
   const list=$('list');
-  if(!data.length){
-    list.innerHTML='<div class="empty">Aún no hay nada. Dicta tu primer gasto arriba 👆</div>';
-    return;
-  }
+  if(!data.length){ list.innerHTML='<div class="empty">Aún no hay nada. Dicta tu primer gasto arriba 👆</div>'; return; }
   const rows=[...data].sort((a,b)=>b.createdAt-a.createdAt);
   list.innerHTML=rows.map(r=>{
-    const m = r.metodo
-      ? '<span class="metodo" data-id="'+r.id+'">'+r.metodo+'</span>'
-      : '<span class="metodo empty-m" data-id="'+r.id+'">+ método</span>';
-    return '<div class="item">'
-      +'<div class="body"><div class="concept">'+esc(r.concepto)+'</div>'
+    const m=r.metodo?'<span class="metodo" data-id="'+r.id+'">'+esc(r.metodo)+'</span>'
+                     :'<span class="metodo empty-m" data-id="'+r.id+'">+ método</span>';
+    return '<div class="item"><div class="body"><div class="concept">'+esc(r.concepto)+'</div>'
       +'<div class="meta">'+fmtDate(r.fecha)+' · '+m+'</div></div>'
       +'<div class="amount">'+money(r.monto)+'</div>'
       +'<button class="del" data-del="'+r.id+'" title="Eliminar">×</button></div>';
   }).join('');
 }
-function esc(s){return s.replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));}
 
-/* ---------- mensajes ---------- */
-let msgT;
-function show(kind,txt){ const el=$('msg'); el.className='msg '+kind; el.textContent=txt; clearTimeout(msgT); if(kind==='ok') msgT=setTimeout(()=>el.className='msg',2500); }
-function hideMsg(){ $('msg').className='msg'; }
-
-/* ---------- registrar ---------- */
-function add(){
-  const raw=$('entry').value;
-  const p=parse(raw);
-  if(!p){ show('err','No pude encontrar un monto. Prueba algo como “almuerzo 15 soles”.'); return; }
-  data.push({...p, id:Date.now()+''+Math.floor(Math.random()*999), createdAt:Date.now()});
-  persist(); render();
-  $('entry').value=''; $('entry').focus(); hideMsg();
-  show('ok','Registrado: '+p.concepto+' · '+money(p.monto));
+/* ---------- gráficos ---------- */
+function drawCharts(){
+  const today=new Date();
+  const days=[]; for(let i=13;i>=0;i--){ const d=new Date(today); d.setDate(d.getDate()-i); days.push(iso(d)); }
+  const sums=days.map(day=>data.filter(r=>r.fecha===day).reduce((a,r)=>a+r.monto,0));
+  const dmax=Math.max(...sums,1);
+  $('daily').innerHTML=days.map((day,i)=>{
+    const h=Math.round(sums[i]/dmax*100);
+    return '<div class="col"><div class="bar" style="height:'+h+'%" title="'+fmtDate(day)+': '+money(sums[i])+'"></div>'
+      +'<div class="d">'+day.slice(8)+'</div></div>';
+  }).join('');
+  const ym=today.getFullYear()+'-'+two(today.getMonth()+1);
+  const map={}; data.filter(r=>r.fecha.startsWith(ym)).forEach(r=>{ map[r.concepto]=(map[r.concepto]||0)+r.monto; });
+  const entries=Object.entries(map).sort((a,b)=>b[1]-a[1]).slice(0,8);
+  const cmax=entries.length?entries[0][1]:1;
+  $('cat').innerHTML='<p class="chart-title">Por categoría (este mes)</p>'+
+    (entries.length? entries.map(([name,val])=>
+      '<div class="row"><div class="name">'+esc(name)+'</div>'
+      +'<div class="track"><div class="fill" style="width:'+Math.round(val/cmax*100)+'%"></div></div>'
+      +'<div class="amt">'+money(val)+'</div></div>').join('')
+    : '<div class="empty" style="padding:14px">Sin gastos este mes todavía.</div>');
 }
-$('save').onclick=add;
-$('entry').addEventListener('keydown',e=>{ if(e.key==='Enter') add(); });
 
-/* ---------- eliminar / vaciar ---------- */
-$('list').addEventListener('click',e=>{
-  const del=e.target.getAttribute('data-del');
-  if(del){ data=data.filter(r=>r.id!==del); persist(); render(); return; }
-  const met=e.target.closest('.metodo');
-  if(met) editMetodo(met.getAttribute('data-id'), met);
-});
-$('clear').onclick=()=>{ if(data.length && confirm('¿Vaciar todos los movimientos? Esto no se puede deshacer.')){ data=[]; persist(); render(); } };
+/* ---------- acciones (Firestore) ---------- */
+function col(){ return firebase.firestore().collection('users').doc(uid).collection('gastos'); }
 
-/* ---------- editar método en línea ---------- */
-function editMetodo(id, span){
+async function add(){
+  const p=parse($('entry').value);
+  if(!p){ show('err','No pude encontrar un monto. Prueba algo como “almuerzo 15 soles”.'); return; }
+  const id=Date.now()+''+Math.floor(Math.random()*999);
+  setBusy(true); hideMsg();
+  try{
+    await col().doc(id).set({fecha:p.fecha,concepto:p.concepto,monto:p.monto,metodo:p.metodo,createdAt:Date.now()});
+    $('entry').value=''; show('ok','Registrado: '+p.concepto+' · '+money(p.monto));
+  }catch(e){ show('err','No pude guardar. Revisa tu conexión.'); }
+  finally{ setBusy(false); $('entry').focus(); }
+}
+async function del(id){ try{ await col().doc(id).delete(); }catch(e){ show('err','No pude eliminar.'); } }
+async function clearAll(){
+  if(!data.length) return;
+  if(!confirm('¿Vaciar todos los movimientos? Esto no se puede deshacer.')) return;
+  try{ const snap=await col().get(); const b=firebase.firestore().batch();
+    snap.forEach(d=>b.delete(d.ref)); await b.commit();
+  }catch(e){ show('err','No pude vaciar.'); }
+}
+async function editMetodo(id, span){
   const r=data.find(x=>x.id===id); if(!r) return;
   const input=document.createElement('input');
   input.className='metodo-input'; input.value=r.metodo; input.placeholder='Yape, efectivo…';
   span.replaceWith(input); input.focus(); input.select();
-  const done=()=>{ r.metodo=input.value.trim(); persist(); render(); };
+  const done=async()=>{ const val=input.value.trim();
+    try{ await col().doc(id).update({metodo:val}); }catch(e){ show('err','No pude actualizar el método.'); render(); } };
   input.addEventListener('keydown',ev=>{ if(ev.key==='Enter') done(); if(ev.key==='Escape') render(); });
   input.addEventListener('blur',done);
 }
-
-/* ---------- copiar para Sheets (TSV) ---------- */
-$('copy').onclick=async()=>{
-  if(!data.length){ show('err','No hay movimientos para copiar.'); return; }
+async function exportSheets(){
+  if(!data.length){ show('err','No hay movimientos para exportar.'); return; }
   const rows=[...data].sort((a,b)=>a.createdAt-b.createdAt);
   const tsv=['Fecha\tConcepto\tMonto\tMétodo',
     ...rows.map(r=>[fmtDate(r.fecha),r.concepto,r.monto.toFixed(2),r.metodo].join('\t'))].join('\n');
   try{ await navigator.clipboard.writeText(tsv); show('ok','Copiado. Pega en tu hoja con Ctrl/Cmd + V.'); }
-  catch(e){
-    const ta=document.createElement('textarea'); ta.value=tsv; document.body.appendChild(ta); ta.select();
-    try{ document.execCommand('copy'); show('ok','Copiado. Pega en tu hoja.'); }catch(_){ show('err','No pude copiar automáticamente.'); }
-    ta.remove();
-  }
-};
+  catch(e){ const ta=document.createElement('textarea'); ta.value=tsv; document.body.appendChild(ta); ta.select();
+    try{ document.execCommand('copy'); show('ok','Copiado. Pega en tu hoja.'); }catch(_){ show('err','No pude copiar.'); } ta.remove(); }
+}
+
+/* ---------- eventos ---------- */
+$('save').onclick=add;
+$('entry').addEventListener('keydown',e=>{ if(e.key==='Enter') add(); });
+$('clear').onclick=clearAll;
+$('export').onclick=exportSheets;
+$('list').addEventListener('click',e=>{
+  const d=e.target.getAttribute('data-del'); if(d){ del(d); return; }
+  const met=e.target.closest('.metodo'); if(met) editMetodo(met.getAttribute('data-id'),met);
+});
 
 /* ---------- dictado por voz ---------- */
 const SR=window.SpeechRecognition||window.webkitSpeechRecognition;
@@ -296,15 +329,52 @@ if(SR){
   rec.onend=()=>{ recording=false; mic.classList.remove('rec'); };
   rec.onerror=ev=>{ recording=false; mic.classList.remove('rec');
     if(ev.error==='not-allowed') show('err','Permite el micrófono en el navegador para dictar.');
-    else if(ev.error==='network') show('err','El dictado necesita conexión. Puedes escribir el gasto.');
+    else if(ev.error==='network') show('err','El dictado necesita conexión. Puedes escribir el gasto.'); };
+  rec.onresult=ev=>{ $('entry').value=ev.results[0][0].transcript; add(); };
+}else{ mic.disabled=true; mic.title='Tu navegador no soporta dictado (usa Chrome o escribe)'; }
+
+/* ---------- autenticación ---------- */
+function mapAuthErr(code){
+  const m={
+    'auth/invalid-credential':'Correo o contraseña incorrectos.',
+    'auth/wrong-password':'Contraseña incorrecta.',
+    'auth/user-not-found':'No existe una cuenta con ese correo.',
+    'auth/invalid-email':'El correo no es válido.',
+    'auth/too-many-requests':'Demasiados intentos. Espera un momento.',
+    'auth/network-request-failed':'Sin conexión a internet.'
   };
-  rec.onresult=ev=>{ const txt=ev.results[0][0].transcript; $('entry').value=txt; add(); };
-}else{
-  mic.disabled=true; mic.title='Tu navegador no soporta dictado (usa Chrome o escribe)';
+  return m[code]||('No pude iniciar sesión ('+code+').');
 }
 
-/* ---------- iniciar ---------- */
-load(); render();
+if(!configured()){
+  $('login').style.display='flex';
+  $('loginErr').textContent='Falta pegar tu firebaseConfig en el archivo.';
+}else{
+  firebase.initializeApp(firebaseConfig);
+  const auth=firebase.auth();
+  auth.onAuthStateChanged(u=>{
+    if(u){
+      uid=u.uid;
+      $('login').style.display='none'; $('app').style.display='block';
+      if(unsub) unsub();
+      unsub=col().orderBy('createdAt','desc').onSnapshot(snap=>{
+        data=snap.docs.map(d=>{ const x=d.data();
+          return {id:d.id,fecha:x.fecha,concepto:x.concepto,monto:Number(x.monto)||0,metodo:x.metodo||'',createdAt:Number(x.createdAt)||0}; });
+        render();
+      }, err=>{ show('err','No pude leer tus datos ('+err.code+').'); });
+    }else{
+      uid=null; if(unsub){ unsub(); unsub=null; } data=[];
+      $('app').style.display='none'; $('login').style.display='flex';
+    }
+  });
+  $('loginBtn').onclick=async()=>{
+    $('loginErr').textContent='';
+    try{ await auth.signInWithEmailAndPassword($('email').value.trim(), $('pass').value); }
+    catch(e){ $('loginErr').textContent=mapAuthErr(e.code); }
+  };
+  $('pass').addEventListener('keydown',e=>{ if(e.key==='Enter') $('loginBtn').click(); });
+  $('logout').onclick=()=>firebase.auth().signOut();
+}
 </script>
 </body>
 </html>
